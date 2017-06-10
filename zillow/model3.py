@@ -1,3 +1,6 @@
+# DESCRIPTION:
+# xgboost model using 10-fold CV and grid search hyperparamter tuning.
+#
 # TODO:
 # Try removing outliers
 # Remove features / examples with lots of missing data
@@ -33,13 +36,13 @@ def clean_data(data_frame):
 
 # Load data
 train = pd.read_csv('data/train_2016.csv')
-prop = pd.read_csv('data/properties_2016.csv')
+properties = pd.read_csv('data/properties_2016.csv')
 
 # Clean features
-prop = clean_data(prop)
+properties = clean_data(properties)
 
 # Join features with labels
-train_df = train.merge(prop, how='left', on='parcelid')
+train_df = train.merge(properties, how='left', on='parcelid')
 
 # Refine training data: Remove columns with too much missing info / not useful at the moment; split out labels
 x_df = train_df.drop(['parcelid', 'logerror', 'transactiondate', 'propertyzoningdesc', 'propertycountylandusecode'], axis=1)
@@ -150,7 +153,7 @@ sub = sample.copy()
 
 # Join property data to submission sample
 sample['parcelid'] = sample['ParcelId']
-sample_data = sample.merge(prop, on='parcelid', how='left')
+sample_data = sample.merge(properties, on='parcelid', how='left')
 
 # Create test data using only necessary columns
 X_sample = sample_data[columns_df]
